@@ -1,12 +1,15 @@
 # Qual Frontend
-
-## Framework
-We use [Remix](https://remix.run/).
+<img src="https://img.shields.io/badge/-TypeScript-007ACC.svg?logo=typescript&style=flat">
+<img src="https://img.shields.io/badge/-React-555.svg?logo=react&style=flat">
+<img src="https://img.shields.io/badge/-Remix-232F3E?style=flat&logo=remix">
+<img src="https://badges.aleen42.com/src/vitejs.svg">
 
 ## Setup
 
+Set up your environment using `npm`. If you haven't installed Node.js yet, install Node.js first.
+
 ```shellscript
-npm init
+npm install
 ```
 
 ## Development
@@ -46,3 +49,22 @@ For a simple example, you could use [sirv-cli](https://www.npmjs.com/package/sir
 ```shellscript
 npx sirv-cli build/client/ --single
 ```
+
+## Workflow
+Our workflow is basically based on [Github flow](https://docs.github.com/ja/get-started/using-github/github-flow). 
+
+1. Create a branch and make some commits.
+2. Create a pull request. (Fix your codes according to review comments if there are any problems.)
+3. Merge your pull request.
+
+The above workflow is just a general case. We encourage developers to be flexible.
+
+## Dependencies
+- Node.js v20.12.1
+
+## References
+- [Node.js](https://nodejs.org/en)
+- [Remix Docs](https://remix.run/docs/en/main)
+- [Remix SPA Mode](https://remix.run/docs/en/main/future/spa-mode)
+- [React Docs(jp)](https://ja.react.dev/learn)
+- [Vite](https://ja.vitejs.dev/)
