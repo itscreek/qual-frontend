@@ -1,8 +1,5 @@
 # Qual Frontend
-<img src="https://img.shields.io/badge/-TypeScript-007ACC.svg?logo=typescript&style=flat">
-<img src="https://img.shields.io/badge/-React-555.svg?logo=react&style=flat">
-<img src="https://img.shields.io/badge/-Remix-232F3E?style=flat&logo=remix">
-<img src="https://badges.aleen42.com/src/vitejs.svg">
+<img src="https://img.shields.io/badge/-TypeScript-007ACC.svg?style=flat&logo=typescript&logoColor=%23FFFFFF"> <img src="https://img.shields.io/badge/-React-555.svg?logo=react&style=flat"> <img src="https://img.shields.io/badge/-Remix-232F3E?style=flat&logo=remix"> <img src="https://badges.aleen42.com/src/vitejs.svg">
 
 ## Setup
 
