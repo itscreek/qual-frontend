@@ -1,16 +1,18 @@
 import type { MetaFunction } from "@remix-run/node";
+import TopPage from "~/components/TopPage";
+import GamePage from "~/components/GamePage";
 
 export const meta: MetaFunction = () => {
   return [
     { title: "Quantum Typing" },
-    { name: "description", content: "Welcome to Quantum Typing!" },
   ];
 };
 
 export default function Index() {
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
-      <h1>Welcome to Quantum Typing!</h1>
+    <div>
+      <TopPage />
+      <GamePage />
     </div>
   );
 }
