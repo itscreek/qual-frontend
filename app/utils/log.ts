@@ -11,6 +11,7 @@ export interface Log {
 export interface KeyPressData {
   wordToType: string;
   keyPressed: string;
+  isCorrect: boolean;
 }
 
 export function sendLog(log: Log) {

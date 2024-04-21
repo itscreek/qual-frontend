@@ -53,7 +53,7 @@ export default function GamePage() {
       if (gameState === "ready") {
         if (event.key === " ") {
           setGameState("playing");
-          sendLog({ type: "gameStart", timestamp: event.timeStamp });
+          sendLog({ type: "gameStart", timestamp: Date.now() });
         }
         return;
       }
@@ -65,8 +65,8 @@ export default function GamePage() {
       const currentWord = wordsList[currentWordIndex];
       sendLog({
         type: "keyPress",
-        timestamp: event.timeStamp,
-        data: { wordToType: currentWord, keyPressed: event.key },
+        timestamp: Date.now(),
+        data: { wordToType: currentWord, keyPressed: event.key, isCorrect: event.key === currentWord[typedAlphabetsCount]},
       });
       if (event.key === currentWord[typedAlphabetsCount]) {
         if (
