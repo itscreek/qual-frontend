@@ -3,10 +3,6 @@ import { useEffect } from "react";
 import { getLogs, sendLog } from "~/utils/log";
 import TypingBox from "~/components/TypingBox";
 
-function Ready() {
-  return <div>Press "Space" to start.</div>;
-}
-
 function DownloadBox() {
   function download() {
     const blob = new Blob([JSON.stringify(getLogs())], {
@@ -104,14 +100,12 @@ export default function GamePage() {
 
   return (
     <div>
-      {gameState === "ready" && <Ready />}
-      {gameState === "playing" && (
-        <TypingBox
-          word={wordsList[currentWordIndex]}
-          typedAlphabetsCount={typedAlphabetsCount}
-          isCorrect={isCorrect}
-        />
-      )}
+      <TypingBox
+        gameReady={gameState === "ready"}
+        word={wordsList[currentWordIndex]}
+        typedAlphabetsCount={typedAlphabetsCount}
+        isCorrect={isCorrect}
+      />
       {gameState === "ended" && <DownloadBox />}
       <EndGameButton
         onEndGameClick={() => {

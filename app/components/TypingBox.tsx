@@ -1,8 +1,10 @@
 export default function TypingBox({
+  gameReady,
   word,
   typedAlphabetsCount,
   isCorrect,
 }: {
+  gameReady: boolean;
   word: string;
   typedAlphabetsCount: number;
   isCorrect: boolean;
@@ -17,12 +19,19 @@ export default function TypingBox({
         transitionDuration: "150ms",
       }}
     >
-      <span style={{ color: "white", fontSize: "25px", fontWeight: 200 }}>
-          <span style={{ color: "greenyellow", textDecoration: "overline", }}>
+      {gameReady && (
+        <span style={{ color: "white", fontSize: "25px", fontWeight: 200 }}>
+          Press "Space" to start.
+        </span>
+      )}
+      {!gameReady && (
+        <span style={{ color: "white", fontSize: "25px", fontWeight: 200 }}>
+          <span style={{ color: "greenyellow", textDecoration: "overline" }}>
             {word.slice(0, typedAlphabetsCount)}
           </span>
           {word.substring(typedAlphabetsCount)}
         </span>
+      )}
     </div>
   );
 }
