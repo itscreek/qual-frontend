@@ -1,19 +1,10 @@
 import { useState } from "react";
 import { useEffect } from "react";
-import { KeyPressData, getLogs, sendLog } from "~/utils/log";
+import { getLogs, sendLog } from "~/utils/log";
+import TypingBox from "~/components/TypingBox";
 
 function Ready() {
   return <div>Press "Space" to start.</div>;
-}
-
-function TypingBox({
-  word,
-  typedAlphabetsCount,
-}: {
-  word: string;
-  typedAlphabetsCount: number;
-}) {
-  return <div>{word}</div>;
 }
 
 function DownloadBox() {
@@ -48,6 +39,8 @@ export default function GamePage() {
   // Indicates how many letters of the current word have been entered.
   const [typedAlphabetsCount, setTypedAlphabetsCount] = useState<number>(0);
 
+  const [isCorrect, setIsCorrect] = useState<boolean>(true);
+
   useEffect(() => {
     const keyDownHandler = (event: KeyboardEvent) => {
       if (gameState === "ready") {
@@ -63,16 +56,22 @@ export default function GamePage() {
       }
 
       const currentWord = wordsList[currentWordIndex];
+      const isCorrect = event.key === currentWord[typedAlphabetsCount];
       sendLog({
         type: "keyPress",
         timestamp: Date.now(),
-        data: { wordToType: currentWord, keyPressed: event.key, isCorrect: event.key === currentWord[typedAlphabetsCount]},
+        data: {
+          wordToType: currentWord,
+          keyPressed: event.key,
+          isCorrect: isCorrect,
+        },
       });
-      if (event.key === currentWord[typedAlphabetsCount]) {
+      if (isCorrect) {
         if (
           typedAlphabetsCount === currentWord.length - 1 &&
           currentWordIndex === wordsList.length - 1
         ) {
+          setIsCorrect(true);
           setGameState("ended");
           return;
         }
@@ -81,12 +80,18 @@ export default function GamePage() {
           typedAlphabetsCount === currentWord.length - 1 &&
           currentWordIndex < wordsList.length - 1
         ) {
+          setIsCorrect(true);
           setCurrentWordIndex(currentWordIndex + 1);
           setTypedAlphabetsCount(0);
           return;
         }
 
+        setIsCorrect(true);
         setTypedAlphabetsCount((prev) => prev + 1);
+      }
+
+      if (!isCorrect) {
+        setIsCorrect(false);
       }
     };
 
@@ -95,7 +100,7 @@ export default function GamePage() {
     return () => {
       document.removeEventListener("keydown", keyDownHandler);
     };
-  }, [gameState, wordsList, currentWordIndex, typedAlphabetsCount]);
+  }, [gameState, wordsList, currentWordIndex, typedAlphabetsCount, isCorrect]);
 
   return (
     <div>
@@ -104,10 +109,15 @@ export default function GamePage() {
         <TypingBox
           word={wordsList[currentWordIndex]}
           typedAlphabetsCount={typedAlphabetsCount}
+          isCorrect={isCorrect}
         />
       )}
       {gameState === "ended" && <DownloadBox />}
-      <EndGameButton onEndGameClick={() => {setGameState("ended");}}/>
+      <EndGameButton
+        onEndGameClick={() => {
+          setGameState("ended");
+        }}
+      />
     </div>
   );
 }
