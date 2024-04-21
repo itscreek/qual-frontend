@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useEffect } from "react";
+import { KeyPressData, getLogs, sendLog } from "~/utils/log";
 
 function Ready() {
   return <div>Press "Space" to start.</div>;
@@ -16,7 +17,18 @@ function TypingBox({
 }
 
 function DownloadBox() {
-  return <div>Download</div>;
+  function download() {
+    const blob = new Blob([JSON.stringify(getLogs())], { type: "application/json" });
+    let downloadLink = document.createElement("a");
+    downloadLink.download = "log.json";
+    downloadLink.href = URL.createObjectURL(blob);
+    downloadLink.click();
+  }
+  return (
+    <div>
+      <button onClick={download}>Download Log</button>
+    </div>
+  );
 }
 
 function EndGameButton() {
@@ -38,7 +50,8 @@ export default function GamePage() {
     const keyDownHandler = (event: KeyboardEvent) => {
       if (gameState === "ready") {
         if (event.key === " ") {
-            setGameState("playing");
+          setGameState("playing");
+          sendLog({ type: "gameStart", timestamp: event.timeStamp });
         }
         return;
       }
@@ -48,8 +61,25 @@ export default function GamePage() {
       }
 
       const currentWord = wordsList[currentWordIndex];
+      sendLog({
+        type: "keyPress",
+        timestamp: event.timeStamp,
+        data: { wordToType: currentWord, keyPressed: event.key },
+      });
       if (event.key === currentWord[typedAlphabetsCount]) {
-        if (typedAlphabetsCount === currentWord.length - 1) {
+        if (
+          typedAlphabetsCount === currentWord.length - 1 &&
+          currentWordIndex === wordsList.length - 1
+        ) {
+          setGameState("ended");
+          sendLog({ type: "gameEnd", timestamp: event.timeStamp });
+          return;
+        }
+
+        if (
+          typedAlphabetsCount === currentWord.length - 1 &&
+          currentWordIndex < wordsList.length - 1
+        ) {
           setCurrentWordIndex(currentWordIndex + 1);
           setTypedAlphabetsCount(0);
           return;
