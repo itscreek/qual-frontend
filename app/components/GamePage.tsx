@@ -18,7 +18,9 @@ function TypingBox({
 
 function DownloadBox() {
   function download() {
-    const blob = new Blob([JSON.stringify(getLogs())], { type: "application/json" });
+    const blob = new Blob([JSON.stringify(getLogs())], {
+      type: "application/json",
+    });
     let downloadLink = document.createElement("a");
     downloadLink.download = "log.json";
     downloadLink.href = URL.createObjectURL(blob);
@@ -31,8 +33,8 @@ function DownloadBox() {
   );
 }
 
-function EndGameButton() {
-  return <button>End Game</button>;
+function EndGameButton({ onEndGameClick }: { onEndGameClick: () => void }) {
+  return <button onClick={onEndGameClick}>End Game</button>;
 }
 
 export default function GamePage() {
@@ -72,7 +74,6 @@ export default function GamePage() {
           currentWordIndex === wordsList.length - 1
         ) {
           setGameState("ended");
-          sendLog({ type: "gameEnd", timestamp: event.timeStamp });
           return;
         }
 
@@ -106,7 +107,7 @@ export default function GamePage() {
         />
       )}
       {gameState === "ended" && <DownloadBox />}
-      <EndGameButton />
+      <EndGameButton onEndGameClick={() => {setGameState("ended");}}/>
     </div>
   );
 }
