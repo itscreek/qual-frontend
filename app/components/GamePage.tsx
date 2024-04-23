@@ -1,24 +1,8 @@
 import { useState } from "react";
 import { useEffect } from "react";
-import { getLogs, sendLog } from "~/utils/log";
+import { sendLog } from "~/utils/log";
 import TypingBox from "~/components/TypingBox";
-
-function DownloadBox() {
-  function download() {
-    const blob = new Blob([JSON.stringify(getLogs())], {
-      type: "application/json",
-    });
-    let downloadLink = document.createElement("a");
-    downloadLink.download = "log.json";
-    downloadLink.href = URL.createObjectURL(blob);
-    downloadLink.click();
-  }
-  return (
-    <div>
-      <button onClick={download}>Download Log</button>
-    </div>
-  );
-}
+import DownloadBox from "~/components/DownloadBox";
 
 function EndGameButton({ onEndGameClick }: { onEndGameClick: () => void }) {
   return <button onClick={onEndGameClick}>End Game</button>;
@@ -106,7 +90,7 @@ export default function GamePage() {
         typedAlphabetsCount={typedAlphabetsCount}
         isCorrect={isCorrect}
       />
-      {gameState === "ended" && <DownloadBox />}
+      {gameState != "ready" && <DownloadBox />}
       <EndGameButton
         onEndGameClick={() => {
           setGameState("ended");
