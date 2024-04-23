@@ -99,7 +99,7 @@ export default function GamePage() {
   }, [gameState, wordsList, currentWordIndex, typedAlphabetsCount, isCorrect]);
 
   return (
-    <div>
+    <div className="game-page">
       <TypingBox
         gameReady={gameState === "ready"}
         word={wordsList[currentWordIndex]}

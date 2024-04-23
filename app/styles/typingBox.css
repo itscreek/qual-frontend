@@ -1,0 +1,10 @@
+.game-page > .typing-box {
+  display: flex;
+  flex-direction: column;
+  white-space: nowrap;
+
+  width: 300px;
+  text-align: center;
+  margin-right: auto;
+  margin-left: auto;
+}
