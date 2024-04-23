@@ -3,9 +3,12 @@ import { useEffect } from "react";
 import { sendLog } from "~/utils/log";
 import TypingBox from "~/components/TypingBox";
 import DownloadBox from "~/components/DownloadBox";
+import { IoMdCloseCircleOutline } from "react-icons/io";
 
 function EndGameButton({ onEndGameClick }: { onEndGameClick: () => void }) {
-  return <button onClick={onEndGameClick}>End Game</button>;
+  return (<div className="end-game-box">
+    <button onClick={onEndGameClick}><IoMdCloseCircleOutline /></button>
+  </div>);
 }
 
 export default function GamePage() {
@@ -84,6 +87,11 @@ export default function GamePage() {
 
   return (
     <div className="game-page">
+      <EndGameButton
+        onEndGameClick={() => {
+          setGameState("ended");
+        }}
+      />
       <TypingBox
         gameReady={gameState === "ready"}
         word={wordsList[currentWordIndex]}
@@ -91,11 +99,6 @@ export default function GamePage() {
         isCorrect={isCorrect}
       />
       {gameState != "ready" && <DownloadBox />}
-      <EndGameButton
-        onEndGameClick={() => {
-          setGameState("ended");
-        }}
-      />
     </div>
   );
 }
