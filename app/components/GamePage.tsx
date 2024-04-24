@@ -21,7 +21,7 @@ type GamePageProps = {
 };
 
 export default function GamePage({ isShowing, onEndGameClick }: GamePageProps) {
-  type GameState = "ready" | "playing" | "ended";
+  type GameState = "ready" | "playing" | "finished";
   const [gameState, setGameState] = useState<GameState>("ready");
 
   const [wordsList, setWordsList] = useState<string[]>(typingWords);
@@ -43,7 +43,7 @@ export default function GamePage({ isShowing, onEndGameClick }: GamePageProps) {
         return;
       }
 
-      if (gameState === "ended") {
+      if (gameState === "finished") {
         return;
       }
 
@@ -64,7 +64,7 @@ export default function GamePage({ isShowing, onEndGameClick }: GamePageProps) {
           currentWordIndex === wordsList.length - 1
         ) {
           setIsCorrect(true);
-          setGameState("ended");
+          setGameState("finished");
           return;
         }
 
@@ -116,7 +116,7 @@ export default function GamePage({ isShowing, onEndGameClick }: GamePageProps) {
         }}
       />
       <TypingBox
-        gameReady={gameState === "ready"}
+        gameState={gameState}
         word={wordsList[currentWordIndex]}
         typedAlphabetsCount={typedAlphabetsCount}
         isCorrect={isCorrect}
