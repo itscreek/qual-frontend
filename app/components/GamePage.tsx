@@ -6,12 +6,21 @@ import DownloadBox from "~/components/DownloadBox";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 
 function EndGameButton({ onEndGameClick }: { onEndGameClick: () => void }) {
-  return (<div className="end-game-box">
-    <button onClick={onEndGameClick}><IoMdCloseCircleOutline /></button>
-  </div>);
+  return (
+    <div className="end-game-box">
+      <button onClick={onEndGameClick}>
+        <IoMdCloseCircleOutline />
+      </button>
+    </div>
+  );
 }
 
-export default function GamePage() {
+type GamePageProps = {
+  isShowing: boolean;
+  onEndGameClick: () => void;
+};
+
+export default function GamePage({ isShowing, onEndGameClick }: GamePageProps) {
   type GameState = "ready" | "playing" | "ended";
   const [gameState, setGameState] = useState<GameState>("ready");
 
@@ -85,11 +94,25 @@ export default function GamePage() {
     };
   }, [gameState, wordsList, currentWordIndex, typedAlphabetsCount, isCorrect]);
 
+  function handleEndGameClick() {
+    setGameState("ready");
+    setCurrentWordIndex(0);
+    setTypedAlphabetsCount(0);
+    setIsCorrect(true);
+  }
+
   return (
-    <div className="game-page">
+    <div
+      className="game-page"
+      style={{
+        transform: isShowing ? "translateY(-100vh)" : "none",
+        transitionDuration: isShowing ? "1.5s" : "0s",
+      }}
+    >
       <EndGameButton
         onEndGameClick={() => {
-          setGameState("ended");
+          onEndGameClick();
+          handleEndGameClick();
         }}
       />
       <TypingBox
