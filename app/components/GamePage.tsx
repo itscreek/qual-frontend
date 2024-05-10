@@ -96,6 +96,7 @@ export default function GamePage({ isShowing, onEndGameClick }: GamePageProps) {
   }, [gameState, wordsList, currentWordIndex, typedAlphabetsCount, isCorrect]);
 
   function handleEndGameClick() {
+    sendLog({ type: "gameEnd", timestamp: Date.now() });
     setGameState("ready");
     setCurrentWordIndex(0);
     setTypedAlphabetsCount(0);
