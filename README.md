@@ -47,6 +47,17 @@ For a simple example, you could use [sirv-cli](https://www.npmjs.com/package/sir
 npx sirv-cli build/client/ --single
 ```
 
+## Env variables
+You can specified these env variables in your `.env` file.
+
+```
+VITE_API_BASE_URL=baseUrlOfAPI
+VITE_API_LOG_ENDPOINT=/endPointOfLogAPI
+VITE_API_TYPING_PROBLEMS_ENDPOINT=/endPointOfTypingProblemsAPI
+```
+
+You can use `.env.development` in `development` mode and `.env.production` in `production` mode. For more details, please check https://vitejs.dev/guide/env-and-mode.
+
 ## Workflow
 Our workflow is basically based on [Github flow](https://docs.github.com/ja/get-started/using-github/github-flow). 
 
