@@ -4,7 +4,7 @@ import { sendLog } from "~/utils/log";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import TypingBox from "~/components/TypingBox";
 import DownloadBox from "~/components/DownloadBox";
-import { getTypingWords } from "~/utils/typingWords";
+import { getTypingProblems } from "~/utils/typingWords";
 
 function EndGameButton({ onEndGameClick }: { onEndGameClick: () => void }) {
   return (
@@ -25,7 +25,7 @@ export default function GamePage({ isShowing, onEndGameClick }: GamePageProps) {
   type GameState = "ready" | "playing" | "finished";
   const [gameState, setGameState] = useState<GameState>("ready");
 
-  const [wordsList, setWordsList] = useState<string[]>(getTypingWords());
+  const [wordsList, setWordsList] = useState<string[]>(["hello", "world"]);
 
   const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
 
@@ -33,6 +33,15 @@ export default function GamePage({ isShowing, onEndGameClick }: GamePageProps) {
   const [typedAlphabetsCount, setTypedAlphabetsCount] = useState<number>(0);
 
   const [isCorrect, setIsCorrect] = useState<boolean>(true);
+
+  // Initialize wordslist
+  useEffect(() => {
+    const initializeWordsList = async () => {
+      const newWordsList = await getTypingProblems();
+      setWordsList(newWordsList);
+    };
+    initializeWordsList();
+  }, []);
 
   useEffect(() => {
     const keyDownHandler = (event: KeyboardEvent) => {

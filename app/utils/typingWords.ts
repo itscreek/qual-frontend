@@ -1,7 +1,9 @@
-const typingWords = [
-    "hello", "world", "apple", "banana", "cow"
-];
+import { UrlProvider } from "./urlProvider";
 
-export function getTypingWords(): string[] {
-    return typingWords;
+export async function getTypingProblems(): Promise<string[]> {
+  const urlProvider = UrlProvider.getInstance();
+  const typingProblemsEndpoint = urlProvider.getTypingProblemsAPIUrl();
+  const response = await fetch(typingProblemsEndpoint);
+  const responseJson = await response.json() as any;
+  return responseJson.words;
 }
