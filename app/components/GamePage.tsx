@@ -132,7 +132,7 @@ export default function GamePage({ isShowing, onEndGameClick }: GamePageProps) {
         typedAlphabetsCount={typedAlphabetsCount}
         isCorrect={isCorrect}
       />
-      {gameState != "ready" && <DownloadBox />}
+      {/* {gameState != "ready" && <DownloadBox />} */}
     </div>
   );
 }
