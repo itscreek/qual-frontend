@@ -34,12 +34,13 @@ export default function GamePage({ isShowing, onEndGameClick }: GamePageProps) {
 
   const [isCorrect, setIsCorrect] = useState<boolean>(true);
 
+  async function initializeWordsList() {
+    const newWordsList = await getTypingProblems();
+    setWordsList(newWordsList);
+  }
+
   // Initialize wordslist
   useEffect(() => {
-    const initializeWordsList = async () => {
-      const newWordsList = await getTypingProblems();
-      setWordsList(newWordsList);
-    };
     initializeWordsList();
   }, []);
 
@@ -107,6 +108,7 @@ export default function GamePage({ isShowing, onEndGameClick }: GamePageProps) {
   function handleEndGameClick() {
     sendLog({ type: "gameEnd", timestamp: Date.now() });
     setGameState("ready");
+    initializeWordsList();
     setCurrentWordIndex(0);
     setTypedAlphabetsCount(0);
     setIsCorrect(true);
