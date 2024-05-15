@@ -34,23 +34,27 @@ class GameLogger {
   }
 
   getTypingTimeData() {
-    let words = GameLogger.logs
-      .filter((log) => log.type === "keyPress")
-      .map((log) => log.data?.wordToType);
-    words = [...new Set(words)];
+    const correctKeyPressLogs = GameLogger.logs.filter(
+      (log) => log.type === "keyPress" && log.data?.isCorrect
+    );
 
     let typingTimeData = [];
-    for (const word of words) {
-      const timestamps = GameLogger.logs
-        .filter((log) => log.data?.wordToType === word)
-        .map((log) => log.timestamp);
+    for (let i = 0; i < correctKeyPressLogs.length; ) {
+      const log = correctKeyPressLogs[i];
+      if (!log.data) {
+        i++;
+        continue;
+      }
 
+      const currentWord = log.data.wordToType;
       typingTimeData.push({
-        word: word,
-        time_ms: timestamps[timestamps.length - 1] - timestamps[0],
+        word: currentWord,
+        time:
+          correctKeyPressLogs[i + currentWord.length - 1].timestamp -
+          log.timestamp,
       });
+      i += currentWord.length;
     }
-    GameLogger.logs = [];
 
     return typingTimeData;
   }
