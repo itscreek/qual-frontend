@@ -1,5 +1,5 @@
 {
   "baseUrl": "http://localhost:18000",
-  "logEndpoint": "/log",
-  "typingProblemsEndpoint": "/typingProblems"
+  "logEndpoint": "/log/",
+  "typingProblemsEndpoint": "/problems/"
 }
