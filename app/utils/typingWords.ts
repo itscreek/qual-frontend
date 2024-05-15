@@ -36,7 +36,7 @@ class TypingProblemsGetter {
       queryString += "&logs=" + JSON.stringify(typingTimeData);
     }
     const url = TypingProblemsGetter.typingProblemsEndpoint + queryString;
-    const response = await fetch(url);
+    const response = await fetch(encodeURI(url));
     const responseJson = (await response.json()) as any;
     return responseJson.words;
   }
