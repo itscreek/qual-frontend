@@ -1,5 +1,3 @@
-import { UrlProvider } from "./urlProvider";
-
 type LogType = "gameStart" | "gameEnd" | "keyPress";
 
 export interface Log {
@@ -34,6 +32,28 @@ class GameLogger {
   getLogs() {
     return GameLogger.logs;
   }
+
+  getTypingTimeData() {
+    let words = GameLogger.logs
+      .filter((log) => log.type === "keyPress")
+      .map((log) => log.data?.wordToType);
+    words = [...new Set(words)];
+
+    let typingTimeData = [];
+    for (const word of words) {
+      const timestamps = GameLogger.logs
+        .filter((log) => log.data?.wordToType === word)
+        .map((log) => log.timestamp);
+
+      typingTimeData.push({
+        word: word,
+        time_ms: timestamps[timestamps.length - 1] - timestamps[0],
+      });
+    }
+    GameLogger.logs = [];
+
+    return typingTimeData;
+  }
 }
 
 export function sendLog(log: Log) {
@@ -44,4 +64,9 @@ export function sendLog(log: Log) {
 export function getLogs() {
   const gameLogger = GameLogger.getInstance();
   return gameLogger.getLogs();
+}
+
+export function getTypingTimeData() {
+  const gameLogger = GameLogger.getInstance();
+  return gameLogger.getTypingTimeData();
 }
