@@ -16,14 +16,9 @@ export interface KeyPressData {
 
 class GameLogger {
   private static instance: GameLogger;
-  private static logAPIUrl: string;
   private static logs: Log[] = [];
-  private static readonly MAX_LOGS = 20;
 
-  private constructor() {
-    const urlProvider = UrlProvider.getInstance();
-    GameLogger.logAPIUrl = urlProvider.getLogAPIUrl();
-  }
+  private constructor() {}
 
   static getInstance(): GameLogger {
     if (!GameLogger.instance) {
@@ -34,27 +29,10 @@ class GameLogger {
 
   pushLog(log: Log) {
     GameLogger.logs.push(log);
-
-    if (
-      GameLogger.logs.length > GameLogger.MAX_LOGS ||
-      log.type === "gameEnd"
-    ) {
-      this.sendLogs();
-    }
   }
 
-  sendLogs() {
-    const logs = { logs: GameLogger.logs };
-
-    fetch(GameLogger.logAPIUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(logs),
-    }).then(() => {
-      GameLogger.logs = [];
-    });
+  getLogs() {
+    return GameLogger.logs;
   }
 }
 
@@ -64,5 +42,6 @@ export function sendLog(log: Log) {
 }
 
 export function getLogs() {
-  return [];
+  const gameLogger = GameLogger.getInstance();
+  return gameLogger.getLogs();
 }
