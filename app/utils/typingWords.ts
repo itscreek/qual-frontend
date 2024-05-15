@@ -8,7 +8,8 @@ class TypingProblemsGetter {
 
   private constructor() {
     const urlProvider = UrlProvider.getInstance();
-    TypingProblemsGetter.typingProblemsEndpoint = urlProvider.getTypingProblemsAPIUrl();
+    TypingProblemsGetter.typingProblemsEndpoint =
+      urlProvider.getTypingProblemsAPIUrl();
   }
 
   static getInstance(): TypingProblemsGetter {
@@ -18,12 +19,16 @@ class TypingProblemsGetter {
     return TypingProblemsGetter.instance;
   }
 
+  async getInitialTypingProblems(): Promise<string[]> {
+    const response = await fetch(TypingProblemsGetter.typingProblemsEndpoint);
+    const responseJson = (await response.json()) as any;
+    TypingProblemsGetter.sessionId = responseJson.sid;
+    return responseJson.words;
+  }
+
   async getTypingProblems(): Promise<string[]> {
     if (!TypingProblemsGetter.sessionId) {
-      const response = await fetch(TypingProblemsGetter.typingProblemsEndpoint);
-      const responseJson = await response.json() as any;
-      TypingProblemsGetter.sessionId = responseJson.sid;
-      return responseJson.words;
+      throw new Error("Session ID is not set");
     }
     const typingTimeData = getTypingTimeData();
     let queryString = "?sid=" + TypingProblemsGetter.sessionId.toString();
@@ -32,12 +37,34 @@ class TypingProblemsGetter {
     }
     const url = TypingProblemsGetter.typingProblemsEndpoint + queryString;
     const response = await fetch(url);
-    const responseJson = await response.json() as any;
+    const responseJson = (await response.json()) as any;
     return responseJson.words;
   }
+
+  endSession() {
+    if (!TypingProblemsGetter.sessionId) {
+      throw new Error("Session ID is not set");
+    }
+    const url =
+      TypingProblemsGetter.typingProblemsEndpoint +
+      "?sid=" +
+      TypingProblemsGetter.sessionId.toString();
+    fetch(url);
+    TypingProblemsGetter.sessionId = undefined;
+  }
+}
+
+export async function getInitialTypingProblems(): Promise<string[]> {
+  const typingProblemsGetter = TypingProblemsGetter.getInstance();
+  return typingProblemsGetter.getInitialTypingProblems();
 }
 
 export async function getTypingProblems(): Promise<string[]> {
   const typingProblemsGetter = TypingProblemsGetter.getInstance();
   return typingProblemsGetter.getTypingProblems();
+}
+
+export function endSession() {
+  const typingProblemsGetter = TypingProblemsGetter.getInstance();
+  typingProblemsGetter.endSession();
 }

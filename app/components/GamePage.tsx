@@ -4,7 +4,11 @@ import { sendLog } from "~/utils/log";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import TypingBox from "~/components/TypingBox";
 import DownloadBox from "~/components/DownloadBox";
-import { getTypingProblems } from "~/utils/typingWords";
+import {
+  getInitialTypingProblems,
+  getTypingProblems,
+  endSession,
+} from "~/utils/typingWords";
 
 function EndGameButton({ onEndGameClick }: { onEndGameClick: () => void }) {
   return (
@@ -34,21 +38,25 @@ export default function GamePage({ isShowing, onEndGameClick }: GamePageProps) {
 
   const [isCorrect, setIsCorrect] = useState<boolean>(true);
 
+  // The number corresponds to the backend NUM_RESPONSE_WORDS
+  const PERIOD_OF_GET_WORDS = 15;
+
   async function initializeWordsList() {
-    const newWordsList = await getTypingProblems();
+    const newWordsList = await getInitialTypingProblems();
     setWordsList(newWordsList);
   }
 
-  // Initialize wordslist
-  useEffect(() => {
-    initializeWordsList();
-  }, []);
+  async function updateWordsList() {
+    const newWordsList = await getTypingProblems();
+    setWordsList([...wordsList, ...newWordsList]);
+  }
 
   useEffect(() => {
     const keyDownHandler = (event: KeyboardEvent) => {
       if (gameState === "ready") {
         if (event.key === " ") {
           setGameState("playing");
+          initializeWordsList();
           sendLog({ type: "gameStart", timestamp: Date.now() });
         }
         return;
@@ -86,6 +94,12 @@ export default function GamePage({ isShowing, onEndGameClick }: GamePageProps) {
           setIsCorrect(true);
           setCurrentWordIndex(currentWordIndex + 1);
           setTypedAlphabetsCount(0);
+          if (
+            currentWordIndex % PERIOD_OF_GET_WORDS ===
+            PERIOD_OF_GET_WORDS - 1
+          ) {
+            updateWordsList();
+          }
           return;
         }
 
@@ -108,10 +122,10 @@ export default function GamePage({ isShowing, onEndGameClick }: GamePageProps) {
   function handleEndGameClick() {
     sendLog({ type: "gameEnd", timestamp: Date.now() });
     setGameState("ready");
-    initializeWordsList();
     setCurrentWordIndex(0);
     setTypedAlphabetsCount(0);
     setIsCorrect(true);
+    endSession();
   }
 
   return (
