@@ -29,7 +29,7 @@ export default function GamePage({ isShowing, onEndGameClick }: GamePageProps) {
   type GameState = "ready" | "playing" | "finished";
   const [gameState, setGameState] = useState<GameState>("ready");
 
-  const [wordsList, setWordsList] = useState<string[]>(["hello", "world"]);
+  const [wordsList, setWordsList] = useState<string[]>([]);
 
   const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
 
@@ -42,7 +42,13 @@ export default function GamePage({ isShowing, onEndGameClick }: GamePageProps) {
   const PERIOD_OF_GET_WORDS = 15;
 
   async function initializeWordsList() {
-    const newWordsList = await getInitialTypingProblems();
+    let newWordsList;
+    try {
+      newWordsList = await getInitialTypingProblems();
+    } catch (error) {
+      console.error(error);
+      newWordsList = ["hello", "world"];
+    }
     setWordsList(newWordsList);
   }
 
@@ -55,8 +61,10 @@ export default function GamePage({ isShowing, onEndGameClick }: GamePageProps) {
     const keyDownHandler = (event: KeyboardEvent) => {
       if (gameState === "ready") {
         if (event.key === " ") {
-          setGameState("playing");
-          initializeWordsList();
+          (async () => {
+            await initializeWordsList();
+            setGameState("playing");
+          })();
           sendLog({ type: "gameStart", timestamp: Date.now() });
         }
         return;
