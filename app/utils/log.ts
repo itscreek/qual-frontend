@@ -55,7 +55,7 @@ class GameLogger {
       });
       i += currentWord.length;
     }
-
+    GameLogger.logs = [];
     return typingTimeData;
   }
 }
