@@ -4,7 +4,11 @@ import { sendLog } from "~/utils/log";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import TypingBox from "~/components/TypingBox";
 import DownloadBox from "~/components/DownloadBox";
-import { getTypingWords } from "~/utils/typingWords";
+import {
+  getInitialTypingProblems,
+  getTypingProblems,
+  endSession,
+} from "~/utils/typingWords";
 
 function EndGameButton({ onEndGameClick }: { onEndGameClick: () => void }) {
   return (
@@ -25,7 +29,7 @@ export default function GamePage({ isShowing, onEndGameClick }: GamePageProps) {
   type GameState = "ready" | "playing" | "finished";
   const [gameState, setGameState] = useState<GameState>("ready");
 
-  const [wordsList, setWordsList] = useState<string[]>(getTypingWords());
+  const [wordsList, setWordsList] = useState<string[]>([]);
 
   const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
 
@@ -34,11 +38,33 @@ export default function GamePage({ isShowing, onEndGameClick }: GamePageProps) {
 
   const [isCorrect, setIsCorrect] = useState<boolean>(true);
 
+  // The number corresponds to the backend NUM_RESPONSE_WORDS
+  const PERIOD_OF_GET_WORDS = 15;
+
+  async function initializeWordsList() {
+    let newWordsList;
+    try {
+      newWordsList = await getInitialTypingProblems();
+    } catch (error) {
+      console.error(error);
+      newWordsList = ["hello", "world"];
+    }
+    setWordsList(newWordsList);
+  }
+
+  async function updateWordsList() {
+    const newWordsList = await getTypingProblems();
+    setWordsList([...wordsList, ...newWordsList]);
+  }
+
   useEffect(() => {
     const keyDownHandler = (event: KeyboardEvent) => {
       if (gameState === "ready") {
         if (event.key === " ") {
-          setGameState("playing");
+          (async () => {
+            await initializeWordsList();
+            setGameState("playing");
+          })();
           sendLog({ type: "gameStart", timestamp: Date.now() });
         }
         return;
@@ -76,6 +102,12 @@ export default function GamePage({ isShowing, onEndGameClick }: GamePageProps) {
           setIsCorrect(true);
           setCurrentWordIndex(currentWordIndex + 1);
           setTypedAlphabetsCount(0);
+          if (
+            currentWordIndex % PERIOD_OF_GET_WORDS ===
+            PERIOD_OF_GET_WORDS - 1
+          ) {
+            updateWordsList();
+          }
           return;
         }
 
@@ -96,10 +128,12 @@ export default function GamePage({ isShowing, onEndGameClick }: GamePageProps) {
   }, [gameState, wordsList, currentWordIndex, typedAlphabetsCount, isCorrect]);
 
   function handleEndGameClick() {
+    sendLog({ type: "gameEnd", timestamp: Date.now() });
     setGameState("ready");
     setCurrentWordIndex(0);
     setTypedAlphabetsCount(0);
     setIsCorrect(true);
+    endSession();
   }
 
   return (
@@ -122,7 +156,7 @@ export default function GamePage({ isShowing, onEndGameClick }: GamePageProps) {
         typedAlphabetsCount={typedAlphabetsCount}
         isCorrect={isCorrect}
       />
-      {gameState != "ready" && <DownloadBox />}
+      {/* {gameState != "ready" && <DownloadBox />} */}
     </div>
   );
 }
