@@ -1,6 +1,8 @@
 # Qual Frontend
 <img src="https://img.shields.io/badge/-TypeScript-007ACC.svg?style=flat&logo=typescript&logoColor=%23FFFFFF"> <img src="https://img.shields.io/badge/-React-555.svg?logo=react&style=flat"> <img src="https://img.shields.io/badge/-Remix-232F3E?style=flat&logo=remix"> <img src="https://badges.aleen42.com/src/vitejs.svg">
 
+https://qual-frontend.vercel.app/
+
 ## Setup
 
 Set up your environment using `npm`. If you haven't installed Node.js yet, install Node.js first.
@@ -38,14 +40,7 @@ npm run preview
 > `vite preview` is not designed for use as a production server
 
 ### Deployment
-
-You can then serve your app from any HTTP server of your choosing. The server should be configured to serve multiple paths from a single root `/index.html` file (commonly called "SPA fallback"). Other steps may be required if the server doesn't directly support this functionality.
-
-For a simple example, you could use [sirv-cli](https://www.npmjs.com/package/sirv-cli):
-
-```shellscript
-npx sirv-cli build/client/ --single
-```
+Vercel will automatically deploy every push in `main` branch.
 
 ## Env variables
 You can specified these env variables in your `.env` file.
